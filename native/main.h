@@ -8,8 +8,6 @@
 #include <string.h>
 #include <gtk/gtk.h>
 #include <glib.h>
-#include <pthread.h>    /* POSIX Threads */
-
 //defines
 //#define ROOT_PATH "file:///%s/site.samsung0c/root.html"
 #define WEB_ROOT "../clientui/web"

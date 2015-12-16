@@ -1,27 +1,12 @@
-/**
- * @file     : samsung0c.cpp
- * @brief    :
- *
- * @author   : HDX Client Team
- * @date     : 21-Apr-2015
- *
- * Copyright 2015 by Samsung Electronics Inc.
- *
- * This software is the confidential and proprietary information
- * of Samsung Electronics Inc. (Confidential Information).  You
- * shall not disclose such Confidential Information and shall use
- * it only in accordance with the terms of the license agreement
- * you entered into with Samsung.
- *
- */
 #include "main.h"
-#include <unistd.h>
+
 #include <signal.h>
 #include <execinfo.h>
-#include <unistd.h>
-#include <string.h>
+#include <webkit/webkit.h>
 
 
+GtkWidget *web_view=NULL;
+GtkWidget *main_window=NULL;
 static void window_object_cleared_cb(WebKitWebView  *web_view,WebKitWebFrame *frame,gpointer context,gpointer window_object,gpointer user_data)
 {
     (void)web_view;
@@ -64,7 +49,7 @@ static gboolean show_inspector_window(WebKitWebInspector *inspector,GtkWidget   
 
 int main(int argc, char* argv[])
 {    
-	std::string t_url="../web/root.html";
+    char* t_url="file:///home/vikas/projects/mycomputer/web/root.html";
     /* Initialize the widget set */
     gtk_init (&argc, &argv);    
 
@@ -80,17 +65,13 @@ int main(int argc, char* argv[])
     gdk_screen_get_monitor_geometry(gds,0,&gRect); //0 refers to primary monitor
     //gtk_window_resize(GTK_WINDOW(main_window),gdk_screen_get_width(gds),gdk_screen_get_height(gds)-1);        
     
-    //fixed for RK3288
-    gtk_window_resize(GTK_WINDOW(main_window),gRect.width,gRect.height-1);        
+    gtk_window_resize(GTK_WINDOW(main_window),gRect.width/2,gRect.height/2);        
 
     //gtk_window_fullscreen((GtkWindow*)main_window);
     //GtkWidget *scrolled_window = gtk_scrolled_window_new (NULL, NULL);
 
     /* Create the WebKit Web View widget */
     web_view = webkit_web_view_new ();
-
-    // Redirect all glib logging to boost logging
-    g_log_set_default_handler(GLogHandler, NULL);
 
     //Initialization Flow: JS Interface Up (4)
     /* Connect the window object cleared event with callback */
@@ -100,11 +81,10 @@ int main(int argc, char* argv[])
     gtk_container_add (GTK_CONTAINER (main_window), web_view);
 
     /* Connect the destroy window event with destroy function */
-    g_signal_connect (G_OBJECT (main_window), "destroy", G_CALLBACK (destroy), Taskbar::Get());
    
 
     /* Load our home page*/
-    webkit_web_view_load_uri (WEBKIT_WEB_VIEW (web_view), t_url.c_str());
+    webkit_web_view_load_uri (WEBKIT_WEB_VIEW (web_view), t_url);
 
 
     /* Create the main window */
@@ -119,7 +99,7 @@ int main(int argc, char* argv[])
 
     //Deinitialization Round
     //memory cleanup
-
+	
     return 0;
 }
 
